@@ -1,0 +1,154 @@
+﻿@using UniversityManagementApp.Models
+
+@{
+    List<RegisterStudent> registerStudents = ViewBag.RegisterStudent;
+    List<Course> courses = ViewBag.SaveCourse;
+}
+@section styles{
+    <link href="~/jquery-datepicker/jquery-ui.min.css" rel="stylesheet" />
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Enroll</title>
+</head>
+<body>
+    <h3>Enroll Course </h3>
+<div>
+    <form method="POST" id="ViewResult">
+        <center>
+            <table>
+                <tr>
+                    <td>
+                        <label for="RegStudentId">RegNo</label>
+                    </td>
+                    <td>
+                        <select id="RegStudentId" name="RegStudentId">
+                            <option value="">---SELECT---</option>
+                            @foreach (RegisterStudent registerStudent in registerStudents)
+                            {
+                                <option value="@registerStudent.Id"> @registerStudent.RegNo</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="Name">Name</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Email">Emaill</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Email" name="Email" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Department">Department</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Department" name="Department" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="CourseId">SelectCourse</label>
+                    </td>
+                    <td>
+                        <select id="CourseId" name="CourseId">
+                            <option value="">---SELECT---</option>
+                            @foreach (Course selectCourse in courses)
+                            {
+                                <option value="@selectCourse.Id"> @selectCourse.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Date">Date</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Date" name="Date" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="Enroll" />
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </center>
+    </form>
+    <div style="color: green">@ViewBag.Message</div>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+@section scripts
+{
+    <script src="~/jquery-datepicker/jquery-ui.min.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            $("#Date").datepicker();
+        });
+        $(function() {
+
+
+            $('#RegStudentId').on('change', function() {
+                var regNoId = $('#RegStudentId').val();
+                $('#Name').val("");
+                $('#Email').val("");
+                $('#Department').val("");
+                var json =
+                {
+                    RegNoId: regNoId
+                };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetStudentInfo", "EnrollCourse")',
+                    contentType: 'application/json',
+                    data: JSON.stringify(json),
+                    success: function(response) {
+                        $('#Name').val(response.Name);
+                        $('#Email').val(response.Email);
+                        $('#Department').val(response.Department);
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetDepartmentByDepartmentId", "EnrollCourse")',
+                    contentType: 'application/json',
+                    data: JSON.stringify(json),
+                    success: function(response) {
+                        $('#Department').val(response.Name);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}
+
+
+
+
+</body>
+</html>

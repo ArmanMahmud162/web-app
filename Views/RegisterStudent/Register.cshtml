@@ -1,0 +1,208 @@
+﻿@using UniversityManagementApp.Models
+
+@{
+  // Layout = null;
+    List<Department> departments = ViewBag.Departments;
+    RegisterStudent student = ViewBag.Student;
+}
+
+
+
+    @section styles{
+<link href="~/jquery-datepicker/jquery-ui.min.css" rel="stylesheet" />
+}
+<div>
+    <h3>Register Student </h3>
+
+    <form method="post" id="RegisterForm">
+        <center>
+            <table>
+                <tr>
+                    <td>
+                        <label>Name</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Email</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Email" name="Email" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>ContactNo</label>
+                    </td>
+                    <td>
+                        <input type="text" id="ContactNo" name="ContactNo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Date</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Date" name="Date" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Address</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Address" name="Address" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="departmentId">Department</label>
+                    </td>
+                    <td>
+                        <select id="departmentId" name="departmentId">
+                            <option value="">select</option>
+                            @foreach (Department department in ViewBag.Departments)
+                            {
+                                <option value="@department.Id">@department.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" value=" Save" />
+                    </td>
+                </tr>
+
+            </table>
+        </center>
+    </form>
+    <div style="color: goldenrod">@ViewBag.Message</div>
+</div>
+
+@if (student != null)
+{
+    <table>
+        <tr>
+            <td>
+                <label>Name: </label>
+            </td>
+            <td>
+                <label>@student.Name</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Email: </label>
+            </td>
+            <td>
+                <label>@student.Email</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>ContactNo: </label>
+            </td>
+            <td>
+                <label>@student.ContactNo</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Date: </label>
+            </td>
+            <td>
+                <label>@student.Date</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Address: </label>
+            </td>
+            <td>
+                <label>@student.Address</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Department: </label>
+            </td>
+            <td>
+                <label>@ViewBag.Department</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Reg. No: </label>
+            </td>
+            <td>
+                <label>@student.RegNo</label>
+            </td>
+        </tr>
+
+    </table>
+}
+
+
+
+
+@section scripts
+{
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+
+
+    <script src="~/jquery-datepicker/jquery-ui.min.js"></script>
+
+
+
+    <script>
+        
+        $(document).ready(function () {
+            $("#Date").datepicker();
+        });
+        //$(document).ready(function() {
+
+        //    $('#Date').datepicker({
+        //        format: "dd/mm/yyyy",
+        //        todayBtn: true,
+        //        daysOfWeekDisabled: "5",
+        //        daysOfWeekHighlighted: "5",
+        //        calendarWeeks: true,
+        //        autoclose: true,
+        //        todayHighlight: true
+        //    });
+        //});
+        $(document).ready(function() {
+            $("#RegisterForm").validate({
+                rules: {
+                    Name: "required",
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    ContactNo: "required",
+                    Address: "required",
+                    Date: "required"
+
+                },
+                messages: {
+                    Name: "Please enter Student Name",
+                    Email: "Please enter a Valid Email",
+                    ContactNo: "Please enter Student Contact No",
+                    Address: "Please enter a Student Address"
+
+                }
+            });
+        });
+    </script>
+
+
+}
+
+
+
+

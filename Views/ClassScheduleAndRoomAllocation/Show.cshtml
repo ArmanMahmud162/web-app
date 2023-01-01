@@ -1,0 +1,84 @@
+﻿@using UniversityManagementApp.Models
+
+@{
+    //Layout = null;
+    ViewBag.Title = "Show";
+    List<Department> departments = ViewBag.Departments;
+}
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Show</title>
+</head>
+<body>
+    <h3>Class Schedule and Room Allocation </h3>
+<div class="container">
+    
+    <table>
+        <tr>
+            <td>
+            <select id="DepartmentId" name="DepartmentId">
+                <option value="">--SELECT--</option>
+                @foreach (Department department in departments)
+                {
+                    <option value="@department.Id"> @department.Name</option>
+                }
+            </select>
+            @*@Html.LabelFor(x => x.DepartmentId)
+                </td>
+                <td>
+                    @Html.DropDownListFor(x => x.DepartmentId, new SelectList(departments, "Id", "Name"), "---Select department---")
+                </td>*@
+        </tr>
+    </table>
+    <table class="table table-bordered table-condensed table-responsive">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Schedule</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+
+    </table>
+
+
+    @section scripts
+    {
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+        <script>
+            $(function() {
+                $('#DepartmentId').on('change', function() {
+                    var deptId = $('#DepartmentId').val();
+                    var json = { DepartmentId: deptId }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetAllocateInfos", "ClassScheduleAndRoomAllocation")',
+                        contentType: 'application/json',
+                        data: JSON.stringify(json),
+                        success: function(data) {
+                            $('#tableBody').empty();
+                            var code = "";
+                            $.each(data, function(key, value) {
+                                if (code === value.Code) {
+
+
+                                } else {
+                                    $('#tableBody').append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>' + value.Schedule + '</td></tr>');
+                                    code = value.Code;
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+</div>
+</body>
+</html>

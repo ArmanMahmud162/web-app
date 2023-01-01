@@ -1,0 +1,91 @@
+﻿@using UniversityManagementApp.Models
+@{
+    //Layout = null;
+    List<Department> departments = ViewBag.Departments;
+    List<Course> saveCourse = ViewBag.SaveCourse;
+
+    List<Course> saveCourse2 = ViewBag.CourseInfo;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Show</title>
+</head>
+<body>
+   
+        <div>
+            <h3>View Course Statics</h3>
+            <table>
+                <tr>
+                    <td>
+                        <label>Departments</label>
+                    </td>
+                    @*<td>
+                            <select>
+                                <option value="">--Select--</option>
+                                @foreach (SaveDepartment saveDepartment in departments)
+                                {
+                                    <option value="@saveDepartment.Id">@saveDepartment.Name</option>
+                                }
+                            </select>
+                        </td>*@
+                    <td>
+                        <select id="departmentId" name="departmentId">
+                            <option value="">select</option>
+                            @foreach (Department department in ViewBag.Departments)
+                            {
+                                <option value="@department.Id">@department.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+</body>
+</html>
+<table class="table table-bordered table-striped table-hover" id="studentTable">
+    <thead>
+        <tr>
+            <td>Code</td>
+            <td>Name</td>
+            <td>Semesterr</td>
+            <td>Assigned_To</td>
+
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+@section scripts
+{
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#departmentId").change(function () {
+                var deptId = $("#departmentId").val();
+                $("#tableBody").empty();
+                var json = { departmentId: deptId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCourseStaticByDepartmentId", "ViewCourse")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        $("#tableBody").empty();
+                        $.each(data, function (key, value) {
+                            $("#tableBody").append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>' + value.Semesterr + '</td><td>' + value.TeacherName + '</td></tr>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+

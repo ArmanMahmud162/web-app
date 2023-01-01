@@ -1,0 +1,157 @@
+﻿@using UniversityManagementApp.Models
+
+@{
+    List<RegisterStudent> registerStudents = ViewBag.RegisterStudent;
+    // List<ViewResults> results = ViewBag.result;
+    ViewBag.Title = "Index";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<div>
+
+    <div>
+        <h3>View Result</h3>
+        <form method="POST" id="ViewResult">
+            <center>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="RegNo">RegNo</label>
+                        </td>
+                        <td>
+                            <select id="RegNo" name="RegNo">
+                                <option value="">---SELECT---</option>
+                                @foreach (RegisterStudent registerStudent in registerStudents)
+                                {
+                                    <option value="@registerStudent.Id"> @registerStudent.RegNo</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="Name">Name</label>
+                        </td>
+                        <td>
+                            <input type="text" id="Name" name="Name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="Email">Emaill</label>
+                        </td>
+                        <td>
+                            <input type="text" id="Email" name="Email" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="Department">Department</label>
+                        </td>
+                        <td>
+                            <input type="text" id="Department" name="Department" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="submit" value="MakePDF" />
+                        </td>
+                    </tr>
+                </table>
+
+                <table id="viewTable" class="table table-bordered table-condensed table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Name</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+
+
+
+
+                </table>
+            </center>
+        </form>
+        <div style="color: green">@ViewBag.Message</div>
+    </div>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+
+    @section scripts
+    {
+        <script>
+            $(function() {
+
+
+                $('#RegNo').on('change', function() {
+                    var registerStudentId = $('#RegNo').val();
+                    $('#Name').val("");
+                    $('#Email').val("");
+                    $('#Department').val("");
+                    var json =
+                    {
+                        RegisterStudentId: registerStudentId
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetStudentInfoByRegisterStudentId", "ViewResult")',
+                        contentType: 'application/json',
+                        data: JSON.stringify(json),
+                        success: function(response) {
+                            $('#Name').val(response.Name);
+                            $('#Email').val(response.Email);
+                            $('#Department').val(response.Department);
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetDepartmentByDepartmentId", "ViewResult")',
+                        contentType: 'application/json',
+                        data: JSON.stringify(json),
+                        success: function(response) {
+
+                            $('#Department').val(response.Name);
+                        }
+                    });
+                });
+
+
+            });
+            $(function() {
+                $('#RegNo').on('change', function() {
+                    var results = $('#RegNo').val();
+                    // alert(deptId);
+                    $('#tableBody').empty();
+                    var json = { RegisterStudentId: results }
+                    $.ajax({
+                        type: "POST",
+                        url: '/ViewResult/GetResults',
+                        contentType: 'application/json',
+                        data: JSON.stringify(json),
+                        success: function(data) {
+                            $('#tableBody').empty();
+                            $.each(data, function(key, value) {
+                                $('#tableBody').append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>' + value.Grade + '</td></tr>');
+                            });
+
+                        }
+                    });
+                });
+
+            });
+        </script>
+    }
+</div>
+</body>
+</html>

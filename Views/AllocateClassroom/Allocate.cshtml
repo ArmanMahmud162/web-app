@@ -1,0 +1,166 @@
+﻿@using UniversityManagementApp.Models
+@model AllocateClass
+
+@{
+    // Layout = null;
+    List<Department> departments = ViewBag.SaveDepartment;
+    List<Room> rooms = ViewBag.Room;
+    List<Day> days = ViewBag.Days;
+}
+@section styles
+{
+    <link href="~/Content/jquery-clockpicker.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-clockpicker.css" rel="stylesheet" />
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Allocate</title>
+</head>
+<body>
+<div>
+    <h3>Allocate Class </h3>
+
+    <form method="POST">
+        <center>
+            <table>
+                <tr>
+                    <td>
+                        <label for="DepartmentId">Department</label>
+                    </td>
+                    <td>
+                        <select id="DepartmentId" name="DepartmentId">
+                            <option value="">--SELECT--</option>
+                            @foreach (Department department in departments)
+                            {
+                                <option value="@department.Id"> @department.Name</option>
+                            }
+                        </select>
+                    </td>
+                    @*<td>@Html.LabelFor(x => x.DepartmentId)</td>
+                    <td>@Html.DropDownListFor(x => x.DepartmentId, new SelectList(departments, "Id", "Name"))</td>*@
+
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="CourseId">Course Code</label>
+                    </td>
+                    <td>
+                        <select id="CourseId" name="CourseId">
+                            <option value="">--SELECT--</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="RoomId">Room No</label>
+                    </td>
+                    <td>
+                        <select id="RoomId" name="RoomId">
+                            <option value="">--SELECT--</option>
+                            @foreach (Room room in rooms)
+                            {
+                                <option value="@room.Id"> @room.Rooms</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="DayId"> Day</label>
+                    </td>
+                    <td>
+                        <select id="DayId" name="DayId">
+                            <option value="">--SELECT--</option>
+                            @foreach (Day day in days)
+                            {
+                                <option value="@day.Id"> @day.Days</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Froms"> From </label>
+                    </td>
+                    <td>
+                        <input type="text" id="Froms" class="timepicker" name="Froms" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="Tos"> To </label>
+                    </td>
+                    <td>
+                        <input type="text" id="Tos" class="timepicker" name="Tos" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="Allocate" />
+                    </td>
+                </tr>
+
+            </table>
+        </center>
+    </form>
+    <div style="color: green">@ViewBag.Message</div>
+</div>
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+
+    @section scripts
+    {
+        <script src="~/Scripts/jquery-clockpicker.js"></script>
+        <script src="~/Scripts/bootstrap-clockpicker.js"></script>
+
+        @*<script type="text/javascript">
+                $(document).ready(function () {
+                    $('#From,#To').ptTimeSelect();
+                });
+            </script>*@
+        <script>
+            $(function () {
+                $('#DepartmentId').on('change', function () {
+                    var deptId = $('#DepartmentId').val();
+                    // alert(deptId);
+                    $('#CourseId').empty();
+                    var json = { departmentId: deptId }
+                    $.ajax({
+                        type: "POST",
+                        url: '/AllocateClassroom/GetAllCoursesByDepartmentId',
+                        contentType: 'application/json',
+                        data: JSON.stringify(json),
+                        success: function (data) {
+                            $.each(data, function (key, value) {
+                                $('#CourseId').append('<option value="' + value.Id + '"> ' + value.Name + '</option>');
+                            });
+
+                        }
+                    });
+                });
+
+            });
+            //$('.timepicker').wickedpicker();
+            $('#Froms').clockpicker({
+                align: 'left',
+                donetext: 'Done',
+                twelvehour: true
+            });
+            $('#Tos').clockpicker({
+                align: 'left',
+                donetext: 'Done',
+                twelvehour: true
+            });
+
+        </script>
+    }
+</body>
+</html>

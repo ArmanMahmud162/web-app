@@ -1,0 +1,138 @@
+﻿@using UniversityManagementApp.Models
+
+@{
+   // Layout = null;
+    List<Department> departments = ViewBag.SaveDepartment;
+    List<Designation> designations = ViewBag.Designation;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Save</title>
+</head>
+<body>
+<div>
+    <h3>Save Teacher </h3>
+
+
+    <form method="post" id="TeacherForm">
+        <center>
+            <table>
+                <tr>
+                    <td>
+                        <label for="Name"> Name </label>
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Address"> Address </label>
+                    </td>
+                    <td>
+                        <input type="text" id="Address" name="Address" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Email"> Email </label>
+                    </td>
+                    <td>
+                        <input type="text" id="Email" name="Email" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="ContactNo"> Contact No </label>
+                    </td>
+                    <td>
+                        <input type="text" id="ContactNo" name="ContactNo" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="DepartmentId">Department</label>
+                    </td>
+                    <td>
+                        <select id="DepartmentId" name="DepartmentId">
+                            <option value="">--SELECT--</option>
+                            @foreach (Department department in departments)
+                            {
+                                <option value="@department.Id">@department.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="DesignationId">Designation Id</label>
+                    </td>
+                    <td>
+                        <select id="DesignationId" name="DesignationId">
+                            <option value="">--SELECT--</option>
+                            @foreach (Designation designation in designations)
+                            {
+                                <option value="@designation.Id">@designation.Designationn</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="CreditToBetaken"> Credit To Be taken </label>
+                    </td>
+                    <td>
+                        <input type="text" id="CreditToBetaken" name="CreditToBetaken" />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td> </td>
+                    <td>
+                        <input type="submit" value="Save" />
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </form>
+    <div> @ViewBag.Message</div>
+</div>
+@section scripts{
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            $("#TeacherForm").validate({
+                rules: {
+                    Name: "required",
+                    Address: "required",
+                    Email: {
+                        required: true,
+                        email: true
+                    }
+
+                },
+                messages: {
+                    Name: "Please enter Teacher Name",
+                    Address: "Please enter Teacher Address",
+                    Email: "Please enter a valid email address"
+
+                }
+            });
+        });
+    </script>
+}
+
+</body>
+</html>
